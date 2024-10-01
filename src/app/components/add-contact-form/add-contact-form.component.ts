@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SeparatorComponent } from "../separator/separator.component";
 import { CommonModule } from '@angular/common';
+import { ContactService } from '../../services/contact.service';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-add-contact-form',
@@ -14,10 +16,16 @@ import { CommonModule } from '@angular/common';
   templateUrl: './add-contact-form.component.html',
   styleUrl: './add-contact-form.component.css'
 })
-export class AddContactFormComponent {
+export class AddContactFormComponent implements OnInit {
   contactForm!: FormGroup;
 
-  constructor() {
+  constructor(private contactService: ContactService, private router: Router) { }
+
+  ngOnInit() {
+    this.initForm();
+  }
+
+  initForm = () => {
     this.contactForm = new FormGroup({
       nome: new FormControl("", Validators.required),
       telefone: new FormControl("", Validators.required),
@@ -29,12 +37,14 @@ export class AddContactFormComponent {
   }
 
   submitContact = () => {
-    if (this.contactForm.valid) {
-      console.log(this.contactForm.value)
-    }
+    const newContact = this.contactForm.value;
+    this.contactService.addContact(newContact);
+    this.contactForm.reset();
+    this.router.navigateByUrl("");
   }
 
   cancel = () => {
-
+    this.contactForm.reset();
+    this.router.navigateByUrl("");
   }
 }

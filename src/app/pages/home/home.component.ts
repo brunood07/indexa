@@ -1,19 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { AddContactHeaderComponent } from '../../components/add-contact-header/add-contact-header.component';
 import { ContactComponent } from '../../components/contact/contact.component';
 import { HeaderComponent } from '../../components/header/header.component';
 import { SeparatorComponent } from '../../components/separator/separator.component';
 import { NewContactComponent } from '../new-contact/new-contact.component';
-import agenda from '../../agenda.json';
 import { ContainerComponent } from "../../components/container/container.component";
-import { RouterLink } from '@angular/router';
-
-interface Contact {
-  id: number;
-  nome: string;
-  telefone: string;
-}
+import { ContactService } from '../../services/contact.service';
+import { Contact } from '../../components/contact/contact';
 
 @Component({
   selector: 'app-home',
@@ -31,14 +26,19 @@ interface Contact {
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   alfabeto = 'abcdefghijklmnopqrstuvwxyz'
-  contacts: Contact[] = agenda || [];
-
+  contacts: Contact[] = [];
   filterByText: string = "";
+
+  constructor(private contactService: ContactService) { }
 
   private removeAccents(texto: string): string {
     return texto.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+
+  ngOnInit() {
+    this.contacts = this.contactService.getContacts();
   }
 
   filterContactsByInitialLetter = (letter: string): Contact[] => {
