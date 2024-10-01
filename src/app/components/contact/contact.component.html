@@ -2,7 +2,7 @@
   <ul>
     <li>{{ nome }}</li>
     <li>{{ telefone }}</li>
-    <li><button><img src="/pencil-square.png"></button></li>
-    <li><button><img src="/trash.png"></button></li>
+    <li><button [routerLink]="['/add-contact', id]"><img src="/pencil-square.png"></button></li>
+    <li><button [routerLink]="['/profile', id]"><img src="/trash.png"></button></li>
   </ul>
 </section>

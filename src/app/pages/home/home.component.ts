@@ -38,7 +38,9 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.contacts = this.contactService.getContacts();
+    this.contactService.getContacts().subscribe(contacts => {
+      this.contacts = contacts || [];
+    });
   }
 
   filterContactsByInitialLetter = (letter: string): Contact[] => {

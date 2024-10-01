@@ -3,7 +3,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { SeparatorComponent } from "../separator/separator.component";
 import { CommonModule } from '@angular/common';
 import { ContactService } from '../../services/contact.service';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-add-contact-form',
@@ -19,10 +19,11 @@ import { Router, RouterLink } from '@angular/router';
 export class AddContactFormComponent implements OnInit {
   contactForm!: FormGroup;
 
-  constructor(private contactService: ContactService, private router: Router) { }
+  constructor(private contactService: ContactService, private router: Router, private activatedRoute: ActivatedRoute) { }
 
   ngOnInit() {
     this.initForm();
+    this.fetchContact();
   }
 
   initForm = () => {
@@ -38,13 +39,25 @@ export class AddContactFormComponent implements OnInit {
 
   submitContact = () => {
     const newContact = this.contactForm.value;
-    this.contactService.addContact(newContact);
-    this.contactForm.reset();
-    this.router.navigateByUrl("");
+    const id = this.activatedRoute.snapshot.paramMap.get('id');
+    newContact.id = id ? parseInt(id) : null;
+    this.contactService.editOrSaveContact(newContact).subscribe(() => {
+      this.contactForm.reset();
+      this.router.navigateByUrl("");
+    });
   }
 
   cancel = () => {
     this.contactForm.reset();
     this.router.navigateByUrl("");
+  }
+
+  fetchContact = () => {
+    const id = this.activatedRoute.snapshot.paramMap.get('id');
+    if (id) {
+      this.contactService.findById(parseInt(id)).subscribe(contact => {
+        this.contactForm.patchValue(contact);
+      })
+    }
   }
 }

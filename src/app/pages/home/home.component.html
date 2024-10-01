@@ -13,7 +13,7 @@
   @for (letra of alfabeto; track letra) {
   <app-separator>{{ letra }}</app-separator>
   @for (contact of filterContactsByInitialLetter(letra); track contact.id) {
-  <app-contact [nome]="contact.nome" [telefone]="contact.telefone"></app-contact>
+  <app-contact [nome]="contact.nome" [telefone]="contact.telefone" [id]="contact.id"></app-contact>
   }
   }
 </app-container>
